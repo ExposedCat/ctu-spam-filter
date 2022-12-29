@@ -38,3 +38,9 @@ def weighted_word_dict(firstdict, seconddict, frequency_cutoff=0):
             counter[word] = round((firstdict.get(word, 0) - seconddict.get(word, 0)) /
                                   (firstdict.get(word, 0) + seconddict.get(word, 0)), 2), firstdict.get(word, 0) + seconddict.get(word, 0)
     return counter
+
+def reweigh_weighted_word_dict(weidghtedict):
+    for word in weidghtedict:
+        temp_dict = {key: weidghtedict[key][1] for key in weidghtedict}
+        max_freq_key = max(temp_dict, key=temp_dict.get)
+        weidghtedict[word] = (weidghtedict[word][0], temp_dict[word]/temp_dict[max_freq_key])
