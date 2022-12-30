@@ -15,7 +15,7 @@ class Writer:
     def print(
         self,
         data,
-        file: TextIOWrapper | None = None,
+        file = None,
         multiple: bool = False,
         force: bool = False,
     ) -> None:

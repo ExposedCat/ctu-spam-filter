@@ -18,7 +18,5 @@ class BinaryConfusionMatrix:
         self.stats[result + field] += 1
 
     def compute_from_dicts(self, truth_dict: dict, pred_dict: dict):
-        true_results = truth_dict.values()
-        predicted_results = pred_dict.values()
-        for truth, prediction in zip(true_results, predicted_results):
-            self.update(truth, prediction)
+        for keyname in pred_dict:
+            self.update(truth_dict[keyname], pred_dict[keyname])

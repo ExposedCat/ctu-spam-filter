@@ -11,8 +11,8 @@ class WeightedWordDict:
             total = first.get(word, 0) + second.get(word, 0)
             if threshold == 0 or total > threshold:
                 diff = first.get(word, 0) - second.get(word, 0)
-                self.counter[word] = round(diff / total, 2), total
-        self.reweigh()
+                self.counter[word] = round(diff / total, 2),
+        #self.reweigh()
 
     def as_dict(self) -> dict:
         return self.counter
@@ -56,7 +56,7 @@ class Wordset:
             FileReader.read_text(filepath)  # type: ignore
         )
 
-    def count(self) -> dict:
+    def to_counter(self) -> dict:
         counter = {}
         for word in self.words:
             counter[word] = counter.get(word, 0) + 1
@@ -80,7 +80,9 @@ class Wordset:
         '''
 
         # Do not divide by zero
-        amount_of_words = amount_of_words if amount_of_words else 0
+        amount_of_words = amount_of_words if amount_of_words else 1
+        #??????????????????????????????????????????????????????????
+        #if not 0 then amount_of_words, else 0?????????????????????
         value = 0
         for word in self.words:
             value += counter.get(word, (0, 0))[0] / amount_of_words
