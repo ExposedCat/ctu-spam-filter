@@ -1,21 +1,19 @@
 from io import TextIOWrapper
 
+# Set to `False` if logs are not needed
+# Or replace with `os.getenv("LOGS")` to use environment `LOGS` variable
+LOGS_ENABLED = True
+
 
 class Writer:
     def __init__(self, prefix: str, enabled: bool = True):
         self.prefix = prefix
-        self.enabled = enabled
-
-    def enable(self):
-        self.enabled = True
-
-    def disable(self):
-        self.enabled = False
+        self.enabled = enabled and LOGS_ENABLED
 
     def print(
         self,
         data,
-        file = None,
+        file: TextIOWrapper | None = None,
         multiple: bool = False,
         force: bool = False,
     ) -> None:

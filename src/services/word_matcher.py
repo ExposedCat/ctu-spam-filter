@@ -1,9 +1,8 @@
-from os.path import dirname
-from helpers.writer import Writer
-from evaluation.utils import EvaluationUtils
-from services.word_evaluator import Wordset, WeightedWordDict
 import os
 import io
+from os.path import dirname
+from helpers.writer import Writer
+from services.word_evaluator import Wordset, WeightedWordDict
 
 
 class WordMatcher:
@@ -32,6 +31,7 @@ class WordMatcher:
         file.seek(0)
         return file
 
+    @staticmethod
     def test_on_corpus(
         filepath: str,
         weights: WeightedWordDict,
@@ -39,17 +39,17 @@ class WordMatcher:
         logs: bool = False,
     ):
         filenames = [
-            filename
-            for filename in os.listdir(filepath)
-            if filename[0] != '!'
+            filename for filename in os.listdir(filepath) if filename[0] != '!'
         ]
 
         wordset = []
-        with open(f'{filepath}/!prediction.txt', "w", encoding="utf-8") as file:
+        with open(
+            f'{filepath}/!prediction.txt', "w", encoding="utf-8"
+        ) as file:
             for filename in filenames:
                 wordset = Wordset(f'{filepath}/{filename}', False)
                 score = wordset.evaluate(weights)
                 tag = "OK" if score > threshold else "SPAM"
                 line = f"{filename} {tag}\n"
-                writer = Writer("test", logs)
+                writer = Writer("Test on corpus", logs)
                 writer.print(data=line, file=file, multiple=logs, force=True)

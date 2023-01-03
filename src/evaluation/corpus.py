@@ -1,5 +1,5 @@
 import os
-from helpers.file_reader import FileReader
+from helpers.file_reader import read_text_file
 
 
 class Corpus:
@@ -13,5 +13,5 @@ class Corpus:
             if filename[0] != '!'
         ]
         for filename in filenames:
-            email = FileReader.read_text(f'{self.path}/{filename}')
+            email = read_text_file(f'{self.path}/{filename}')
             yield filename, email
