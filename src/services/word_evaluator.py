@@ -1,6 +1,6 @@
 from os.path import dirname, basename
-from helpers.file_reader import FileReader
-from helpers.text_parser import TextParser
+from helpers.file_reader import read_text_file
+from helpers.text_parser import get_words
 from evaluation.utils import EvaluationUtils
 
 
@@ -11,20 +11,10 @@ class WeightedWordDict:
             total = first.get(word, 0) + second.get(word, 0)
             if threshold == 0 or total > threshold:
                 diff = first.get(word, 0) - second.get(word, 0)
-                self.counter[word] = round(diff / total, 2),
-        #self.reweigh()
+                self.counter[word] = round(diff / total, 2)
 
     def as_dict(self) -> dict:
         return self.counter
-
-    def reweigh(self):
-        for word in self.counter:
-            temp_dict = {word: self.counter[word][1] for word in self.counter}
-            max_freq_key = max(temp_dict, key=temp_dict.get)  # type: ignore
-            self.counter[word] = (
-                self.counter[word][0],
-                temp_dict[word] / temp_dict[max_freq_key],
-            )
 
 
 class Wordset:
@@ -47,14 +37,12 @@ class Wordset:
         directory = dirname(filepath)
         for filename in classification:
             if tag is None or classification[filename] == tag:
-                self.words += TextParser.get_words(
-                    FileReader.read_text(f'{directory}/{filename}')  # type: ignore
+                self.words += get_words(
+                    read_text_file(f'{directory}/{filename}')  # type: ignore
                 )
 
     def get_from_file(self, filepath: str):
-        return TextParser.get_words(
-            FileReader.read_text(filepath)  # type: ignore
-        )
+        return get_words(read_text_file(filepath))  # type: ignore
 
     def to_counter(self) -> dict:
         counter = {}
@@ -80,10 +68,8 @@ class Wordset:
         '''
 
         # Do not divide by zero
-        amount_of_words = amount_of_words if amount_of_words else 1
-        #??????????????????????????????????????????????????????????
-        #if not 0 then amount_of_words, else 0?????????????????????
+        amount_of_words = amount_of_words if amount_of_words != 0 else 1
         value = 0
         for word in self.words:
-            value += counter.get(word, (0, 0))[0] / amount_of_words
+            value += counter.get(word, 0) / amount_of_words
         return value
