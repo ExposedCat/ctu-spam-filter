@@ -4,3 +4,7 @@
 
 # Cache
 src/**/__pycache__
+
+# Built
+src/src.zip
+test/second/!prediction.txt
