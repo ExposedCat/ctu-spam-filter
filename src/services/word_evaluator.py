@@ -6,6 +6,10 @@ from evaluation.utils import EvaluationUtils
 
 class WeightedWordDict:
     def __init__(self, first: dict, second: dict, threshold: int = 0):
+        '''Create a dictionary of words in two wordsets. The dictionary
+        entries will consist of key-value pairs, where key is the word,
+        and value is the likelihood (-1 to 1) of it being in the first
+        or second wordset. '''
         self.counter = {}
         for word in dict(first, **second):
             total = first.get(word, 0) + second.get(word, 0)
@@ -24,6 +28,8 @@ class Wordset:
         from_classification: bool = True,
         tag: str | None = None,
     ):
+        '''Generate a wordset either from a classification (!truth.txt), or a
+        single file'''
         self.words = []
         if from_classification:
             self.build_from_classification(filepath, tag)
@@ -45,16 +51,26 @@ class Wordset:
         return get_words(read_text_file(filepath))  # type: ignore
 
     def to_counter(self) -> dict:
+        ''' Convert the Wordset to a counter, where the value of each word is the
+            amount of times it is encountered in the set.'''
         counter = {}
         for word in self.words:
             counter[word] = counter.get(word, 0) + 1
         return counter
 
     def evaluate(self, weights: WeightedWordDict) -> float:
+        ''' Evaluate a wordset based on a WeightedWordDict. 
+            The evaluation result is the sum of all the weights of the words
+            in a given wordset, normalized to the (-1,1) range.'''
         counter = weights.as_dict()
         amount_of_words = len([word for word in self.words if word in counter])
 
         '''
+        We tried experimenting with fuzzy wordmatching, however this was way 
+        slower and produced worse results. Spammers are usually not typing
+        out emails on their own, so it's way more likely for spam words to be
+        exact matches anyway.
+
         # 
         # FUZZY MATCHING UNRELIABLE?
         # 
