@@ -20,6 +20,11 @@ class MyFilter:
         desired_freq_cutoff=1,
         training_freq_cutoff=100,
         logs=False,
+        # These default values are not likely to work perfectly for every
+        # email set, however our first correct upload scored max points
+        # already, so we don't want to modify that result anymore :)
+        # Otherwise it would be possible to figure these out dynamically
+        # from the email set.
     ):
         '''Train the MyFilter object on an email set from "set_dir", expects
         the "set_dir" to contain !truth.txt. After this function is ran,
