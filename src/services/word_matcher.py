@@ -5,10 +5,7 @@ from helpers.writer import Writer
 from services.word_evaluator import Wordset, WeightedWordDict
 
 
-def generate_static_training_data(
-    filepath: str,
-    logs: bool = False,
-):
+def generate_static_training_data(filepath: str):
     filenames = [
         filename
         for filename in os.listdir(dirname(filepath))

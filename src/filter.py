@@ -67,9 +67,6 @@ class MyFilter:
             self.ok_counter, self.spam_counter, desired_freq_cutoff
         )
 
-    def set_max_val(self, val):
-        self.max_val = val
-
     def test(self, set_dir: str):
         file = open(f'{set_dir}/!prediction.txt', "w", encoding="utf-8")
         if not self.trained:
