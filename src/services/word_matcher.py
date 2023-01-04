@@ -64,3 +64,5 @@ def score_corpus(
             line = f"{filename} {tag}\n"
             writer = Writer("Test on corpus", logs)
             writer.print(data=line, file=file, multiple=logs, force=True)
+        file.seek(0)
+        return file

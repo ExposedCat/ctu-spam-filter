@@ -1,10 +1,6 @@
 import os
 from helpers.writer import Writer
-from services.word_matcher import (
-    generate_static_training_data,
-    try_cutoff_on_generated_data,
-    score_corpus,
-)
+from services.word_matcher import WordMatcher
 from evaluation.quality import QualityComputor
 from services.word_evaluator import Wordset, WeightedWordDict
 
@@ -53,7 +49,7 @@ class MyFilter:
 
         # Generate the wordsets we will need to find the proper cutoff value.
         # and evaluate them in-place.
-        generated_training_data = generate_static_training_data(
+        generated_training_data = WordMatcher.generate_static_training_data(
             f'{set_dir}/!truth.txt', self.weighted_words
         )
 
@@ -64,8 +60,7 @@ class MyFilter:
         # punishes more for false positives, this should find a conservative
         # and safe cutoff on its own.
         for i in range(t1, t2):
-
-            prediction_file = try_cutoff_on_generated_data(
+            prediction_file = WordMatcher.try_cutoff_on_generated_data(
                 generated_training_data, i / 100
             )
             prediction_file.seek(0)
@@ -108,9 +103,10 @@ class MyFilter:
                 file.write(f"{filen} OK\n")
             file.close()
             return
+
         # Otherwise, run the score_corpus function with the WeightedWordDict
         # and best_cutoff.
-        score_corpus(
+        WordMatcher.score_corpus(
             f'{set_dir}',
             self.weighted_words,
             self.best_cutoff,
