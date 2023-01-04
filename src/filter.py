@@ -1,6 +1,10 @@
 import os
 from helpers.writer import Writer
-from services.word_matcher import WordMatcher
+from services.word_matcher import (
+    generate_static_training_data,
+    try_cutoff_on_generated_data,
+    score_corpus,
+)
 from evaluation.quality import QualityComputor
 from services.word_evaluator import Wordset, WeightedWordDict
 
@@ -14,8 +18,8 @@ class MyFilter:
 
     def train(
         self,
-        set_dir,
-        train_range=(-100, 20),
+        set_dir: str,
+        train_range: tuple[int, int] = (-100, 20),
         desired_freq_cutoff=1,
         training_freq_cutoff=100,
         logs=False,
@@ -36,23 +40,28 @@ class MyFilter:
 
         writer = Writer("Training", logs)
 
-        maxval = (0, 0)
+        max_value = (0, 0)
         t1, t2 = train_range
+
+        generated_training_data = generate_static_training_data(
+            f'{set_dir}/!truth.txt'
+        )
+
         for i in range(t1, t2):
-            prediction_file = WordMatcher.try_on_corpus(
-                f'{set_dir}/!truth.txt', self.weighted_words, i / 100
+            prediction_file = try_cutoff_on_generated_data(
+                generated_training_data, self.weighted_words, i / 100
             )
             prediction_file.seek(0)
             quality = QualityComputor.compute_on_memory_file(
                 set_dir, prediction_file
             )
-            if maxval[0] < quality:
-                maxval = quality, i
+            if max_value[0] < quality:
+                max_value = quality, i
             writer.print((round(quality, 2), i / 100))
             prediction_file.close()
-        writer.print(f"Max value: {round(maxval[0],2)} {maxval[1]/100}")
+        writer.print(f"Max value: {round(max_value[0],2)} {max_value[1]/100}")
 
-        self.max_val = maxval[1] / 100
+        self.max_val = max_value[1] / 100
 
         self.weighted_words = WeightedWordDict(
             self.ok_counter, self.spam_counter, desired_freq_cutoff
@@ -72,7 +81,7 @@ class MyFilter:
                 file.write(f"{filen} OK\n")
             file.close()
             return
-        WordMatcher.test_on_corpus(
+        score_corpus(
             f'{set_dir}',
             self.weighted_words,
             self.max_val,
