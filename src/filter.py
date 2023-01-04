@@ -22,8 +22,8 @@ class MyFilter:
         logs=False,
     ):
         '''Train the MyFilter object on an email set from "set_dir", expects
-           the "set_dir" to contain !truth.txt. After this function is ran,
-           the test() function will produce correct predictions.'''
+        the "set_dir" to contain !truth.txt. After this function is ran,
+        the test() function will produce correct predictions.'''
 
         self.trained = 1
 
@@ -89,8 +89,8 @@ class MyFilter:
 
     def test(self, set_dir: str):
         '''Run the MyFilter test on "set_dir", generating a !prediction.txt
-           file. The MyFilter expects to be trained at this point, and outputs
-           an "all-ok" prediction otherwise.'''
+        file. The MyFilter expects to be trained at this point, and outputs
+        an "all-ok" prediction otherwise.'''
 
         # If not trained, just mark everything as OK.
         if not self.trained:
