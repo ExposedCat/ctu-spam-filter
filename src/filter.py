@@ -1,10 +1,6 @@
 import os
 from helpers.writer import Writer
-from services.word_matcher import (
-    generate_static_training_data,
-    try_cutoff_on_generated_data,
-    score_corpus,
-)
+from services.word_matcher import WordMatcher
 from evaluation.quality import QualityComputor
 from services.word_evaluator import Wordset, WeightedWordDict
 
@@ -43,12 +39,12 @@ class MyFilter:
         max_value = (0, 0)
         t1, t2 = train_range
 
-        generated_training_data = generate_static_training_data(
+        generated_training_data = WordMatcher.generate_static_training_data(
             f'{set_dir}/!truth.txt'
         )
 
         for i in range(t1, t2):
-            prediction_file = try_cutoff_on_generated_data(
+            prediction_file = WordMatcher.try_cutoff_on_generated_data(
                 generated_training_data, self.weighted_words, i / 100
             )
             prediction_file.seek(0)
@@ -78,7 +74,7 @@ class MyFilter:
                 file.write(f"{filen} OK\n")
             file.close()
             return
-        score_corpus(
+        WordMatcher.score_corpus(
             f'{set_dir}',
             self.weighted_words,
             self.max_val,
